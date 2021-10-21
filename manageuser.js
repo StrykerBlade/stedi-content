@@ -38,7 +38,7 @@ function checkexpiredtoken(token){
     usertoken = localStorage.getItem("token");
     $.ajax({
        type: 'GET',
-        url: '/validate/'+token,
+        url: 'getApiRoot()+'+token,
         data: JSON.stringify({usertoken}),
         success: function(data){savetoken(data)},
         contentType: "application/text",
@@ -51,10 +51,10 @@ function userlogin(){
     setusername();
     $.ajax({
         type: 'POST',
-        url: '/login',
+        url: getApiRoot() + '/login',
         data: JSON.stringify({userName, password}),
         success: function(data) {
-            window.location.href = "/timer.html#"+data;//add the token to the url
+            window.location.href = "./timer.html#"+data;//add the token to the url
         },
         contentType: "application/text",
         dataType: 'text'
@@ -126,3 +126,19 @@ var enterFunction = (event) =>{
 var passwordField = document.getElementById("password");
 
 passwordField.addEventListener("keyup", enterFunction);
+
+ const getApiRoot = () => {
+    const hashTag = window.location.hash;
+    console.log('Hash tag '+ hashTag);
+
+    let apiRoot = hashTag === '#local' 
+                ? 'http://localhost:4567' 
+                : 'https://dev.stedi.me';
+
+    if (window.location.hostname.includes('easyrent-dev')){
+        apiRoot = 'https://dev.stedi.me';
+    } else if (window.location.hostname.includes('easyrent.citwdd.net')){
+        apiRoot = 'https://stedi.me';
+    }
+    return apiRoot;
+}
